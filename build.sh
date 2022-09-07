@@ -84,11 +84,11 @@ cargo build --verbose ${BUILD_FLAGS} --target-dir target/
 
 # Test Rust dynamic library file using python
 
-pip install -r python-test/requirements.txt
+pip install -r python-test/py_gd_auth_cobhan/requirements.txt
 
 python3 python-test/app.py "target/${BUILD_DIR}/${LIB_NAME}${DYN_EXT}"
 if [ "$?" -eq "0" ]; then
-    echo "Passed"
+    echo "Passed python tests"
 else
     echo "Tests failed (Rust): ${LIB_NAME}-${DYN_SUFFIX} Result: $?"
     exit 255
@@ -97,24 +97,19 @@ fi
 ##########
 # Test Rust dynamic library file using node
 
-# mkdir -p node-test/${LIB_NAME}/binaries/
-# cp "target/${BUILD_DIR}/${LIB_NAME}${DYN_EXT}" "node-test/${LIB_NAME}/binaries/${LIB_NAME}-${DYN_SUFFIX}"
-# npm -C node-test/${LIB_NAME} install
-# pushd node-test/consumer-console-app
-# npm install
-# count=0
-# while [ $count -lt 20 ]; do
-#     echo "Test iteration ${count}"
-#     node .
-#     if [ "$?" -eq "0" ]; then
-#         echo "Passed"
-#     else
-#         echo "Tests failed (Rust): ${LIB_NAME}-${DYN_SUFFIX} Result: $?"
-#         exit 255
-#     fi
-#     count=$(expr ${count} + 1)
-# done
-# popd
+mkdir -p node-test/node_gd_auth_cobhan/binaries/
+cp "target/${BUILD_DIR}/${LIB_NAME}${DYN_EXT}" "node-test/node_gd_auth_cobhan/binaries/${LIB_NAME}-${DYN_SUFFIX}"
+npm -C node-test/node_gd_auth_cobhan install
+pushd node-test/node_auth_demo
+npm install
+node .
+if [ "$?" -eq "0" ]; then
+    echo "Passed node tests"
+else
+    echo "Tests failed (Rust): ${LIB_NAME}-${DYN_SUFFIX} Result: $?"
+    exit 255
+fi
+popd
 ##########
 
 echo "Tests passed (Rust): ${LIB_NAME}-${DYN_SUFFIX}"

@@ -27,7 +27,6 @@ struct Claims {
    typ: String,
    jti: String,
    iat: u32,
-   
    shopperId: String
 }
 

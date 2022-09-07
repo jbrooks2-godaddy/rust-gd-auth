@@ -3,8 +3,6 @@ use serde::{Deserialize, Serialize};
 use std::collections::{HashSet};
 use std::os::raw::c_char;
 
-const TOKEN: &str = "eyJhbGciOiAiUlMyNTYiLCAia2lkIjogIjV5UXU0WlhXMUEifQ.eyJhdXRoIjogImJhc2ljIiwgImZ0YyI6IDEsICJpYXQiOiAxNjYyMTU5ODUzLCAianRpIjogIlhrSjNzOTE5Z3F1NVlZaW9oSW1QTnciLCAidHlwIjogImlkcCIsICJ2YXQiOiAxNjYyMTU5ODUzLCAiZmFjdG9ycyI6IHsia19wdyI6IDE2NjIxNTk4NTN9LCAicGVyIjogdHJ1ZSwgImhiaSI6IDE2NjIxNTk4NTMsICJzaG9wcGVySWQiOiAiMTY4MzE3MyIsICJjaWQiOiAiZTY2NWFlNGEtODE5OS00Yjg5LWI1ZmEtZTExOTFiYWZiZjY3IiwgInBsaWQiOiAiMSIsICJwbHQiOiAxLCAic2hhcmQiOiAiMDEwMiIsICJpZGVudGl0eSI6ICIwYjQ5NjlhMC1mMWI2LTExZTgtODM2OS0wMjQyYzBhOGIwMDIifQ.1c8Gw4I5j5-mqiY1gyMXHEPleAggUhB63-DrLqsRgiuzTe4YQ0Qk5VgDab1RphivU410rDMB2_jTLN4Sw6zYBPxnKcHa-a7rxzDmdzJ6kttxqckHyFhOWeqAwMfuYWtuVsu7mpBbyNroSW8hrMun-pYAoc1uvTvIUIIgfrgY7KBrPXaT6GtjH_Io2yW13ihYq3hO_I5TkzbnTVUBkteIS-t390EJQDb6gMMNQTzx5FI7uSC_klBIGMCQXBnRMXpzLQMEaTdIRafRD0utZ2dA4qrHMwVHmtAlKxRJgfLwsOboqRmWXCaWNAvJphncj_cjw26i_9XLMstYB6YsKNcuOQ";
-
 #[derive(Serialize, Deserialize, Debug)]
 struct KeyData {
     e: String,
@@ -23,11 +21,13 @@ struct KeyResponse {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[allow(non_snake_case)]
 struct Claims {
    auth: String,
    typ: String,
    jti: String,
    iat: u32,
+   
    shopperId: String
 }
 
@@ -62,7 +62,7 @@ fn parse_token(config: &AuthConfig, token: &str) -> Result<Token, Box<dyn std::e
     let key = DecodingKey::from_rsa_components(&key_data.n, &key_data.e)?;
     let mut validation = Validation::new(Algorithm::RS256);
     validation.required_spec_claims = HashSet::new();
-    let token_message = decode::<Claims>(&TOKEN, &key, &validation);
+    let token_message = decode::<Claims>(token, &key, &validation);
     let result = Token {
         claims: token_message?.claims
     };
